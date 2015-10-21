@@ -1,0 +1,25 @@
+body {
+	background-color: #7ec0ee;
+	text-align: center;
+	font-size: 130%;
+}
+h1 {
+	text-align: left;
+	color: #ffd700;
+}
+#login {
+	float: right;
+}
+#menulist {
+	padding-left: -5em;
+}
+#menulist li {
+	font-size: 150%;
+	display: inline;
+	padding-right: 1em;
+	list-style: none;
+}
+#footer {
+	font-size: 70%;
+	font-style: italic;
+}
