@@ -7,7 +7,7 @@
 
 	<body>
 		<div id="login"><a href="login.php">Login/Register</a></div>
-		<h1><a href="index.php">BacklogBusters</a></h1>
+		<h1>BacklogBusters</h1>
 		<ul id="menulist">
 			<li><a href="index.php">Home</a></li>
 			<li><a href="account.php">Account</a></li>
