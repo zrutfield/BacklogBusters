@@ -2,6 +2,7 @@ body {
 	background-color: #7ec0ee;
 	text-align: center;
 	font-size: 130%;
+	position: relative;
 }
 h1 {
 	text-align: left;
@@ -20,6 +21,8 @@ h1 {
 	list-style: none;
 }
 #footer {
+	position: absolute;
+	bottom: 0;
 	font-size: 70%;
 	font-style: italic;
 }
