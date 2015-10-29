@@ -6,14 +6,9 @@
 	</head>
 
 	<body>
-<<<<<<< HEAD
-		<div id="login"><a href="login.php">Login/Register</a></div>
 		<h1>BacklogBusters</h1>
-=======
 		<div id="login"><a href="login.php">Login</a>/<a href="register.php">Register</a></div>
-		<h1>BacklogBusters</h1>
 
->>>>>>> origin/master
 		<ul id="menulist">
 			<li><a href="index.php">Home</a></li>
 			<li><a href="account.php">Account</a></li>
