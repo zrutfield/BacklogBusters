@@ -1,3 +1,18 @@
+<?php
+	try 
+	{
+	  $host = 'localhost';
+	  $root = 'root';
+	  $password = '';
+
+	  $dbconn = new PDO("mysql:host=$host;dbname=BacklogBusters;",$root,$password);
+
+	} catch (PDOException $e) 
+	{
+	  die("Database Error: ". $e->getMessage());
+	}
+?>
+
 <html>
 	<head>
 	 <title>BacklogBusters</title>
@@ -6,9 +21,8 @@
 	</head>
 
 	<body>
-		<h1>BacklogBusters</h1>
 		<div id="login"><a href="login.php">Login</a>/<a href="register.php">Register</a></div>
-
+		<h1>BacklogBusters</h1>
 		<ul id="menulist">
 			<li><a href="index.php">Home</a></li>
 			<li><a href="account.php">Account</a></li>
