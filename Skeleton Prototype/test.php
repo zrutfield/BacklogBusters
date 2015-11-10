@@ -4,7 +4,7 @@ require_once 'vendor/autoload.php';
 session_start();
 
 $client = new Google_Client();
-$client->setAuthConfigFile('client_secrets.json');
+$client->setAuthConfigFile('../client_secrets.json');
 $client->addScope(Google_Service_Calendar::CALENDAR);
 
 if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {

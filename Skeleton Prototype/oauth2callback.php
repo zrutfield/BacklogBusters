@@ -4,7 +4,7 @@ require_once 'vendor/autoload.php';
 session_start();
 
 $client = new Google_Client();
-$client->setAuthConfigFile('client_secrets.json');
+$client->setAuthConfigFile('../client_secrets.json');
 $client->setRedirectUri('http://' . $_SERVER['HTTP_HOST'] . '/oauth2callback.php');
 $client->addScope(Google_Service_Calendar::CALENDAR);
 
