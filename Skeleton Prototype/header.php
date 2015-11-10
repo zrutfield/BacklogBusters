@@ -5,7 +5,7 @@
 	  $root = 'root';
 	  $password = '';
 
-	  $dbconn = new PDO("mysql:host=$host;dbname=BacklogBusters;",$root,$password);
+	  $dbconn = new PDO("mysql:host=$host;dbname=backlogbusters;",$root,$password);
 
 	} catch (PDOException $e) 
 	{
