@@ -1,6 +1,6 @@
 <?php 
 	require_once("header.php");
-        require_once 'vendor/autoload.php';
+        require_once("vendor/autoload.php");
 
 	if (isset($_POST['username']) && strlen($_POST["username"]) > 0)
 	{
@@ -78,7 +78,7 @@
 	<label for="startTime">Start Time (24-Hour):</label>
 	<input type="number" name="startTime" id="startTime" min="0" max="24" step="1" value="0"><br/>
 	<label for="duration">Duration:</label>
-	<input type="number" name="duration" id="duration"><br/>
+	<input type="number" name="duration" id="duration" min="0" value="0"><br/>
 	<input type="submit" value="Submit"><br/>
 </form>
 
