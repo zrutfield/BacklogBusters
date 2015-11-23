@@ -1,50 +1,63 @@
 <?php 
+	#include the header contents
 	require_once("header.php");
 
-	if (isset($_POST['gamename']) && $_POST['gamename'])
+	#if any of the forms have been filled out, performs the search
+	if (isset($_POST['gameName']) && $_POST['gameName'])
 	{
+		#retrieve any games from the games table whose gameName matches the query
 		$stmt=$dbconn->prepare("SELECT * FROM `games` WHERE `gameName`=:gn");
-		$gn=$_POST["gamename"];
+		$gn=$_POST["gameName"];
 		$stmt->execute(array(':gn'=>$gn));
 		$results = $stmt->fetch();
 		print_r($results);
 	}
-	else if (isset($_POST['sessiontime']) && $_POST['sessiontime'])
+	else if (isset($_POST['sessionTime']) && $_POST['sessionTime'])
 	{
-		$stmt=$dbconn->prepare("SELECT * FROM `games` WHERE `gamename`=:gn");
-		$gn=$_POST["gamename"];
-		$stmt->execute(array(':gn'=>$gn));
+		#retrieve any games from the games table whose sessionTime matches the query
+		#NOTE: the sessionTime variable is not currently implemented in the database, due to an oversight.
+		#This could be added easily, but feature development is frozen at the moment.
+		$stmt=$dbconn->prepare("SELECT * FROM `games` WHERE `sessionTime`=:st");
+		$st=$_POST["sessionTime"];
+		$stmt->execute(array(':st'=>$st));
 		$results = $stmt->fetch();
 		print_r($results);
 	}
-	else if (isset($_POST['completiontime']) && $_POST['completiontime'])
+	else if (isset($_POST['completionTime']) && $_POST['completionTime'])
 	{
-		$stmt=$dbconn->prepare("SELECT * FROM `games` WHERE `gamename`=:gn");
-		$gn=$_POST["gamename"];
-		$stmt->execute(array(':gn'=>$gn));
+		#retrieve any games from the games table whose completionTime matches the query
+		#NOTE: the completionTime variable is not currently implemented in the database, due to an oversight.
+		#This could be added easily, but feature development is frozen at the moment.
+		$stmt=$dbconn->prepare("SELECT * FROM `games` WHERE `completionTime`=:ct");
+		$ct=$_POST["completionTime"];
+		$stmt->execute(array(':ct'=>$ct));
 		$results = $stmt->fetch();
 		print_r($results);
 	}
 ?>
 
-<form name="searchname" action="stats.php" method="post">
-	<label for="gamename">Search by Game:</label>
-	<input type="text" name="gamename" id="gamename">
+<!--The search form for finding a game's statistics by looking for its name.-->
+<form name="searchName" action="stats.php" method="post">
+	<label for="gameName">Search by Game:</label>
+	<input type="text" name="gameName" id="gameName">
 	<input type="submit" value="Search">
 </form>
 
+<!--The search form for finding all games with a certain session time.-->
 <form name="searchsession" action="stats.php" method="post">
-	<label for="sessiontime">Search by Session Time:</label>
-	<input type="number" name="sessiontime" id="sessiontime">
+	<label for="sessionTime">Search by Session Time:</label>
+	<input type="number" name="sessionTime" id="sessionTime">
 	<input type="submit" value="Search">
 </form>
 
-<form name="searchcompletion" actoin="stats.php" method="post">
-	<label for="completiontime">Search by Completion Time:</label>
-	<input type="number" name="completiontime" id="completiontime">
+<!--The search form for finding all games with a certain completion time.-->
+<form name="searchCompletion" action="stats.php" method="post">
+	<label for="completionTime">Search by Completion Time:</label>
+	<input type="number" name="completionTime" id="completionTime">
 	<input type="submit" value="Search">
 </form>
 
 <?php
+	#include the footer contents
 	require_once("footer.php");
 ?>
