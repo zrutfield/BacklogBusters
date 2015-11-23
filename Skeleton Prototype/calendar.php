@@ -67,8 +67,6 @@
 ?>
 
 <form name="calendarform" action="schedule.php" method="post">
-	<label for="username">Enter your Username:</label>
-	<input type="text" name="username" id="username"><br/>
 	<label for="day">Enter the Day you want to Play:</label><br/>
 	<select name="day" id="day">
 		<option>Monday</option>

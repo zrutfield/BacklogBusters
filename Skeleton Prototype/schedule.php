@@ -3,26 +3,20 @@ require_once('header.php');
 require_once('game.php');
 require_once("vendor/autoload.php");
 
-if (isset($_POST) && !empty($_POST) ) {
+if (isset($_POST) && !empty($_POST) && isset($_SESSION['userid']) ) {
 
-    $userstmt=$dbconn->prepare("SELECT * FROM `users` WHERE `username`=:un");
-    $un=$_POST["username"];
-    $userstmt->execute(array(':un'=>$un));
-    $userresults = $userstmt->fetch();
-    if (!$userresults)
-    {
-            exit("Error: That user does not exist.");
-    }
-
-    $userid = $userresults['userID'];
+    // Read POST input
+    $userid = $_SESSION['userid'];
     $day = $_POST['day'];
     $startTime = $_POST['startTime'];
     $duration = $_POST['duration'];
-
+    
+    // Get games owned by logged in user
     $getLibraryStatement = $dbconn->prepare("SELECT * from `usergamerelations` WHERE `UserID`=:userid");
     $getLibraryStatement->execute(array(':userid' => $userid));
     
     $userLibrary = array();
+    // Populate User's Library
     while($game = $getLibraryStatement->fetch(PDO::FETCH_ASSOC))
     {
         $gameID = $game['GameID'];
@@ -40,6 +34,8 @@ if (isset($_POST) && !empty($_POST) ) {
         $gameObject = new Game($gameName, $gameID, $timeToBeat, $sessionTime, $timePlayed);
         array_push($userLibrary, $gameObject);
     }
+
+    // Make Recommendations
     $recommendations = makeRecommendations($userLibrary, array($duration));
     foreach($recommendations as $key=>$value)
     {
@@ -52,6 +48,7 @@ if (isset($_POST) && !empty($_POST) ) {
         }
         echo '<br />';
     }
+    // Create Event in Google Calendar
     session_start();
 
     $client = new Google_Client();
@@ -96,20 +93,23 @@ if (isset($_POST) && !empty($_POST) ) {
           header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
     }
 
-} else {
+} else if(isset($_SESSION['userid'])){
     print "Please set a time to play under Calendar\n";
+} else {
+    print "Please log in first";
 }
 
 function makeRecommendations($library, $durations)
 {
     $recommendations = array();
     $freetimeList = array_unique($durations);
-    
+
     foreach($freetimeList as $freetime)
     {
         $recommendations[$freetime] = array();
     }
 
+    //Match up games with free time slots by session time
     foreach($library as $game)
     {
         if($game->timePlayed < $game->timeToBeat)
