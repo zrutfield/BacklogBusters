@@ -3,10 +3,13 @@
 
 	if (isset($_POST['userreg']) && strlen($_POST["userreg"]) > 0)
 	{
+                // Make sure passwords match
 		if (strcmp($_POST['passreg'],$_POST['passconf']) != 0)
 		{
 			exit("Error: Passwords do not match.");
 		}
+
+                // Check to see if username already exists
 		$userstmt=$dbconn->prepare("SELECT * FROM `users` WHERE `username`=:un");
 		$un=$_POST["userreg"];
 		$userstmt->execute(array(':un'=>$un));
@@ -17,11 +20,23 @@
 		}
 		else
 		{
+                        // Add User to DB
 			$un = $_POST['userreg'];
 			$pass = $_POST['passreg'];
+                        // Hash Password using a random salt
                         $hash = password_hash($pass, PASSWORD_DEFAULT);
 			$userstmt=$dbconn->prepare("INSERT INTO `users` (`username`,`hash`) VALUES (:un,:hash)");
 			$userstmt->execute(array(':un'=>$un,':hash'=>$hash));
+
+                        // Log in the newly created user
+                        $userIDStmt=$dbconn->prepare("SELECT * FROM `users` WHERE `username`=:un");
+                        $userIDStmt->execute(array(':un'=>$un));
+                        $userresults = $userIDStmt->fetch();
+                        session_start();
+                        $_SESSION['userid'] = $userresults['userID'];
+                        $redirect_uri = 'index.php';
+                        header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
+
 		}
 	}
 ?>

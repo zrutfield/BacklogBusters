@@ -11,6 +11,7 @@
 	{
 	  die("Database Error: ". $e->getMessage());
 	}
+        session_start();
 ?>
 
 <html>
@@ -22,11 +23,15 @@
 
         <body>
                 <?php
-                if($_SESSION['userid'])
+                if(isset($_SESSION['userid']))
                 {
-                    echo '<div id="login">Logged In ' . $_SESSION['userid'] . '</div>';
+                    $getUserStmt = $dbconn->prepare("SELECT `username` from `users` WHERE `userID`=:userid");
+                    $getUserStmt->execute(array(':userid'=>$_SESSION['userid']));
+                    $results = $getUserStmt->fetch();
+                    echo '<div id="login">' . $results['username'] . '<a href=logout.php> (Log Out)</a>' . '</div>';
                 } else {
                     echo '<div id="login"><a href="login.php">Login</a>/<a href="register.php">Register</a></div>';
+                    print $_SESSION['userid'];
                 } ?>
 
             

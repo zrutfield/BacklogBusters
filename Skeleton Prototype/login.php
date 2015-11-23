@@ -3,27 +3,24 @@
 
 	if (isset($_POST['userlogin']) && strlen($_POST['userlogin']) > 0)
 	{
-		if (isset($_POST['username']) && strlen($_POST["username"]) > 0)
-		{
-			$userstmt=$dbconn->prepare("SELECT * FROM `users` WHERE `username`=:un");
-			$un=$_POST["userlogin"];
-			$userstmt->execute(array(':un'=>$un));
-			$userresults = $userstmt->fetch();
-			if (!$userresults)
-			{
-				exit("Error: That user does not exist.");
-			}
-			if (password_verify($_POST['password'], $userresults['hash']))
-			{
-				echo "<p>Login Successful! Welcome, ".$un."!</p>";
-                                session_start();
-                                $_SESSION['userid'] = $userresults['UserId'];
-			}
-			else
-			{
-				echo "<p>Login failed.</p>";
-			}
-		}
+            // Find User
+            $userstmt=$dbconn->prepare("SELECT * FROM `users` WHERE `username`=:un");
+            $un=$_POST["userlogin"];
+            $userstmt->execute(array(':un'=>$un));
+            $userresults = $userstmt->fetch();
+            if (!$userresults)
+            {
+                    exit("Error: That user does not exist.");
+            }
+            // Verify Password
+            if (password_verify($_POST['passlogin'], $userresults['hash']))
+            {
+                    $_SESSION['userid'] = $userresults['userID'];
+                    $redirect_uri = 'index.php';
+                    header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
+            } else {
+                    echo "<p>Login failed.</p>";
+            }
 	}
 ?>
 
