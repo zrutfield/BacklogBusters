@@ -27,7 +27,7 @@
 			<li><a href="index.php">Home</a></li>
 			<li><a href="account.php">Account</a></li>
 			<li><a href="calendar.php">Calendar</a></li>
-			<li><a href="schedule.php">Schedule</a></li>
+			<!--<li><a href="schedule.php">Schedule</a></li>-->
 			<li><a href="dataentry.php">Enter Data</a></li>
 			<li><a href="stats.php">Stats</a></li>
 		</ul>

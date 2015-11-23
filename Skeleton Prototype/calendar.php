@@ -52,6 +52,10 @@
                         'end' => array(
                           'dateTime' => $endDateTime,
                         ),
+                        'source' => array(
+                            'title' => 'BacklogBusters',
+                            'url' => 'http://www.backlogbusters.com',
+                        ),
                       ));
                       $added_event = $calendar_service->events->insert($calendarId, $our_event);
 
@@ -62,7 +66,7 @@
         }
 ?>
 
-<form name="calendarform" action="calendar.php" method="post">
+<form name="calendarform" action="schedule.php" method="post">
 	<label for="username">Enter your Username:</label>
 	<input type="text" name="username" id="username"><br/>
 	<label for="day">Enter the Day you want to Play:</label><br/>
@@ -78,7 +82,7 @@
 	<label for="startTime">Start Time (24-Hour):</label>
 	<input type="number" name="startTime" id="startTime" min="0" max="24" step="1" value="0"><br/>
 	<label for="duration">Duration:</label>
-	<input type="number" name="duration" id="duration" min="0" value="0"><br/>
+	<input type="number" name="duration" id="duration" min="0" value="0" step="any"><br/>
 	<input type="submit" value="Submit"><br/>
 </form>
 

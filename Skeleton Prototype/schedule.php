@@ -1,85 +1,148 @@
-<?php 
-	require_once("header.php");
+<?php
+require_once('header.php');
+require_once('game.php');
+require_once("vendor/autoload.php");
 
-	$freetimelengths // array of all free times, as given by user's calendar
-		= array(0.5, 1, 1.5, 5, 1, 2, 0.5); // *TEST*
-	//echo "freetimelengths: "; // *TEST*
-	//print("<pre>".print_r($freetimelengths,true)."</pre>"); // *TEST*
-	$library // user's library of games
-		= array('Chroma Squad', 'Final Fantasy XIV', 'Hatoful Boyfriend', 'Skullgirls', 'Unholy Heights', 'Undertale'); // *TEST*
-	//echo "<br> library: "; // *TEST*
-	//print("<pre>".print_r($library,true)."</pre>"); // *TEST*
-	$sitting // dictionary of avg. sitting times per game title
-		= array('Hatoful Boyfriend' => 1, 'Final Fantasy XIV' => 2.5, 'Chroma Squad' => 0.5, 'Unholy Heights' => 0.5, 
-		'Undertale' => 0.5, 'Skullgirls' => 0.5); // *TEST*
-	//echo "<br> sitting: "; // *TEST*
-	//print("<pre>".print_r($sitting,true)."</pre>"); // *TEST*
-	$played // dictionary of user's time played per game title
-		= array('Hatoful Boyfriend' => 3, 'Final Fantasy XIV' => 277, 'Chroma Squad' => 9, 'Unholy Heights' => 5, 
-		'Undertale' => 3, 'Skullgirls' => 4); // *TEST*
-	//echo "<br> played: "; // *TEST*
-	//print("<pre>".print_r($played,true)."</pre>"); // *TEST*
-	$overall // dictionary of avg. overall length per game title
-		= array('Hatoful Boyfriend' => 8.5, 'Final Fantasy XIV' => 812.5, 'Chroma Squad' => 17, 'Unholy Heights' => 11, 
-		'Undertale' => 13, 'Skullgirls' => 16.5); // *TEST*
-	//echo "<br> overall: "; // *TEST*
-	//print("<pre>".print_r($overall,true)."</pre>"); // *TEST*
+if (isset($_POST) && !empty($_POST) ) {
 
-	//sort & remove duplicates from allfreetimelengths to create ftl
-	$ftl = array(); // optimized version of freetimelengths
-	$ftl = array_unique($freetimelengths);
-	sort($ftl);
-	//echo "ftl: "; // *TEST*
-	//print("<pre>".print_r($ftl,true)."</pre>"); // *TEST*
+    $userstmt=$dbconn->prepare("SELECT * FROM `users` WHERE `username`=:un");
+    $un=$_POST["username"];
+    $userstmt->execute(array(':un'=>$un));
+    $userresults = $userstmt->fetch();
+    if (!$userresults)
+    {
+            exit("Error: That user does not exist.");
+    }
 
-	$recs = array(); // array of recommendations
-	// contains subarrays corresponding to # of unique sitting lengths
-	for ($i = 0; $i < count($ftl); ++$i) {
-		$recs[strval($ftl[$i])] = array();
-	}
-	//echo "recs: "; // *TEST*
-	//print("<pre>".print_r($recs,true)."</pre>"); // *TEST*
+    $userid = $userresults['userID'];
+    $day = $_POST['day'];
+    $startTime = $_POST['startTime'];
+    $duration = $_POST['duration'];
 
-	// find games to rec
-	for ($i = 0; $i < count($library); ++$i) {
-		if ( ($overall[$library[$i]] - $played[$library[$i]]) != 0) { // don't rec games that have been completed
-			//go through list of possible sitting times to find a match
-			for ($j = 0; $j < count($ftl); ++$j) {
-				if ($sitting[$library[$i]] == $ftl[$j]) {
-					// add to recs
-					//echo $library[$i]; echo " is a match for slot "; echo $ftl[$j]; echo "! <br>"; // *TEST*
-					if (count($recs[strval($ftl[$j])]) == 0) { 
-						array_push($recs[strval($ftl[$j])], $library[$i]); 
-						//echo "..."; echo $library[$i]; echo " was the first match! <br>"; // *TEST*
-					}
-					else {
-						//echo "..."; echo $library[$i]; echo " wasn't the first match! <br>"; // *TEST*
-						for ($k = 0; $k < count($recs[strval($ftl[$j])]); ++$k) {
-							//echo "......Comparing "; echo $library[$i]; echo " with ";  // *TEST*
-							//echo $recs[strval($ftl[$j])][$k]; echo ": it's "; // *TEST*
-							//echo $overall[$library[$i]] - $played[$library[$i]]; echo " vs "; // *TEST*
-							//echo $overall[$recs[strval($ftl[$j])][$k]] - $played[$recs[strval($ftl[$j])][$k]]; echo "! <br>"; // *TEST*
-							// prioritize games with less time till completion
-							if ( ($overall[$recs[strval($ftl[$j])][$k]] - $played[$recs[strval($ftl[$j])][$k]]) 
-							> ($overall[$library[$i]] - $played[$library[$i]])) {
-								//echo "......"; echo $recs[strval($ftl[$j])][$k]; echo " had more time left, so "; // *TEST*
-								//echo $library[$i]; echo " goes first! <br>"; // *TEST*
-								array_splice( $recs[strval($ftl[$j])], $k, 0, $library[$i] ); // splice in at position k
-								break;
-							}
-							else if ($k == count($recs[strval($ftl[$j])]) - 1) {
-								array_push($recs[strval($ftl[$j])], $library[$i]);
-								break;
-							}
-						}
-					}
-					break;
-				}
-			}
-		}
-	}
-	
-	print("<pre>".print_r($recs,true)."</pre>"); // *TEST*
+    $getLibraryStatement = $dbconn->prepare("SELECT * from `usergamerelations` WHERE `UserID`=:userid");
+    $getLibraryStatement->execute(array(':userid' => $userid));
+    
+    $userLibrary = array();
+    while($game = $getLibraryStatement->fetch(PDO::FETCH_ASSOC))
+    {
+        $gameID = $game['GameID'];
+        $timePlayed = $game['timePlayed'];
 
-	require_once("footer.php");
-?>
+        $getGameStatement = $dbconn->prepare("SELECT * from `games` WHERE `gameID`=:gameID");
+        $getGameStatement->execute(array(':gameID' => $gameID));
+        $libraryGame = $getGameStatement->fetch(PDO::FETCH_ASSOC);
+
+        $gameName = $libraryGame['gameName'];
+        if($libraryGame['TTBEntries'] == 0 || $libraryGame['sessionEntries'] == 0) { continue; }
+        $timeToBeat = $libraryGame['totalTTB'] / $libraryGame['TTBEntries'];
+        $sessionTime = $libraryGame['totalSession'] / $libraryGame['sessionEntries'];
+
+        $gameObject = new Game($gameName, $gameID, $timeToBeat, $sessionTime, $timePlayed);
+        array_push($userLibrary, $gameObject);
+    }
+    $recommendations = makeRecommendations($userLibrary, array($duration));
+    foreach($recommendations as $key=>$value)
+    {
+        print $key . ":    ";
+        echo '<br />';
+        foreach($value as $game)
+        {
+            print  $game->gameName;
+            echo '<br />';
+        }
+        echo '<br />';
+    }
+    session_start();
+
+    $client = new Google_Client();
+    $client->setAuthConfigFile('../client_secrets.json');
+    $client->addScope(Google_Service_Calendar::CALENDAR);
+
+    if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
+          $client->setAccessToken($_SESSION['access_token']);
+          $calendar_service = new Google_Service_Calendar($client);
+          $calendarId = 'primary';
+
+          if ($day == date('l')) {
+            $startDayTime = strtotime('today');
+          } else {
+            $startDayTime = strtotime('next ' . $day);
+          }
+
+          $startUnixTime = $startDayTime + ($startTime * 60 * 60);
+          $endUnixTime = $startUnixTime + ($duration * 60 * 60);
+
+          $startDateTime = date('c', $startUnixTime);
+          $endDateTime = date('c', $endUnixTime);
+
+          $our_event = new Google_Service_Calendar_Event(array(
+            'summary' => 'Backlog Busters',
+            'description' => 'Play',
+            'start' => array(
+              'dateTime' => $startDateTime,
+            ),
+            'end' => array(
+              'dateTime' => $endDateTime,
+            ),
+            'source' => array(
+                'title' => 'BacklogBusters',
+                'url' => 'http://www.backlogbusters.com',
+            ),
+          ));
+          $added_event = $calendar_service->events->insert($calendarId, $our_event);
+
+    } else {
+          $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/oauth2callback.php';
+          header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
+    }
+
+} else {
+    print "Please set a time to play under Calendar\n";
+}
+
+function makeRecommendations($library, $durations)
+{
+    $recommendations = array();
+    $freetimeList = array_unique($durations);
+    
+    foreach($freetimeList as $freetime)
+    {
+        $recommendations[$freetime] = array();
+    }
+
+    foreach($library as $game)
+    {
+        if($game->timePlayed < $game->timeToBeat)
+        {
+            foreach($freetimeList as $freetime)
+            {
+                $thresh = 0.25;
+                if($freetime <= (1 + $thresh) * $game->timeOfSitting && $freetime >= (1 - $thresh) * $game-> timeOfSitting)
+                {
+                    if (count($recommendations[$freetime]) == 0) { 
+                        array_push($recommendations[$freetime], $game); 
+                    } else {
+                        for ($k = 0; $k < count($recommendations[$freetime]); ++$k) {
+                            // prioritize games with less time till completion
+                            $comparedGame = $recommendations[$freetime][$k];
+                            if ($comparedGame->timeToBeat - $comparedGame->timePlayed > $game->timeToBeat - $game->timePlayed) {
+                                array_splice( $recommendations[$freetime], $k, 0, array($game)); // splice in at position k
+                                break;
+                            } else if ($k == count($recommendations[$freetime]) - 1) {
+                                array_push($recommendations[$freetime], $game);
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    return $recommendations;
+}
+
+
+
+require_once('footer.php');
+

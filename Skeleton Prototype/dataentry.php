@@ -33,9 +33,9 @@
 	<label for="gamename">Game:</label>
 	<input type="text" name="gamename" id="gamename"><br/>
 	<label for="sessiontime">Session Time:</label>
-	<input type="number" name="sessiontime" id="sessiontime"><br/>
+	<input type="number" name="sessiontime" id="sessiontime" min=0 step="any"><br/>
 	<label for="TTB">Completion Time:</label>
-	<input type="number" name="TTB" id="TTB"><br/>
+	<input type="number" name="TTB" id="TTB" min=0 step="any"><br/>
 	<input type="submit" value="Submit">
 </form>
 
