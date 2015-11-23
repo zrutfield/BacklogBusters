@@ -20,8 +20,16 @@
 	 <link href="backlog.css" rel="stylesheet">
 	</head>
 
-	<body>
-		<div id="login"><a href="login.php">Login</a>/<a href="register.php">Register</a></div>
+        <body>
+                <?php
+                if($_SESSION['userid'])
+                {
+                    echo '<div id="login">Logged In ' . $_SESSION['userid'] . '</div>';
+                } else {
+                    echo '<div id="login"><a href="login.php">Login</a>/<a href="register.php">Register</a></div>';
+                } ?>
+
+            
 		<h1>BacklogBusters</h1>
 		<ul id="menulist">
 			<li><a href="index.php">Home</a></li>

@@ -13,9 +13,11 @@
 			{
 				exit("Error: That user does not exist.");
 			}
-			if (strcmp($userresults['pass'],$_POST['pass']) == 0)
+			if (password_verify($_POST['password'], $userresults['hash']))
 			{
 				echo "<p>Login Successful! Welcome, ".$un."!</p>";
+                                session_start();
+                                $_SESSION['userid'] = $userresults['UserId'];
 			}
 			else
 			{

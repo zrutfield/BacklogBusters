@@ -19,9 +19,9 @@
 		{
 			$un = $_POST['userreg'];
 			$pass = $_POST['passreg'];
-			$salt = "lsdkfj";
-			$userstmt=$dbconn->prepare("INSERT INTO `users` (`username`,`pass`,`salt`) VALUES (:un,:pass,:salt)");
-			$userstmt->execute(array(':un'=>$un,':pass'=>$pass,':salt'=>$salt));
+                        $hash = password_hash($pass, PASSWORD_DEFAULT);
+			$userstmt=$dbconn->prepare("INSERT INTO `users` (`username`,`hash`) VALUES (:un,:hash)");
+			$userstmt->execute(array(':un'=>$un,':hash'=>$hash));
 		}
 	}
 ?>
@@ -29,9 +29,9 @@
 <form name="registerform" action="register.php" method="post">
 	<label for="userreg">Username:</label>
 	<input name="userreg" type="text" size="20" id="userreg"><br/>
-	<laebl for="passreg">Password:</laebl>
+	<label for="passreg">Password:</label>
 	<input name="passreg" type="password" id="passreg"><br/>
-	<laebl for="passconf">Re-enter Password:</laebl>
+	<label for="passconf">Re-enter Password:</label>
 	<input name="passconf" type="password" id="passconf"><br/>
 	<input type="submit" value="Submit">
 </form>
