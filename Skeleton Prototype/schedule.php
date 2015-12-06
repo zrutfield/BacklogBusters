@@ -1,6 +1,7 @@
 <?php
 require_once('header.php');
 require_once('game.php');
+// Load Google Calendar API library
 require_once("vendor/autoload.php");
 
 if (isset($_POST) && !empty($_POST) && isset($_SESSION['userid']) ) {
