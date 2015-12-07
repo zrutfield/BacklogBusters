@@ -1,5 +1,7 @@
 <?php
 	//Establish the database connection.
+    require_once("vendor/autoload.php");
+    session_start();
 	try 
 	{
 	  $host = 'localhost';
@@ -13,7 +15,6 @@
 	{
 	  die("Database Error: ". $e->getMessage());
 	}
-        session_start();
 ?>
 
 <html>

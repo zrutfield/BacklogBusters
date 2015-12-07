@@ -5,9 +5,9 @@
 	if (isset($_POST['gameName']) && $_POST['gameName'])
 	{
 		#retrieve any games from the games table whose gameName matches the query
-		$stmt=$dbconn->prepare("SELECT * FROM `games` WHERE `gameName`=:gn");
-		$gn=$_POST["gameName"];
-		$stmt->execute(array(':gn'=>$gn));
+		$stmt=$dbconn->prepare("SELECT * FROM `games` WHERE `gameName` LIKE :gn");
+		$gn=$_POST["gamename"];
+		$stmt->execute(array(':gn'=>'%' .  $gn . '%'));
 		$results = $stmt->fetch();
 		print_r($results);
 	}
