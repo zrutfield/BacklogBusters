@@ -1,6 +1,11 @@
 <?php 
 	require_once("header.php");
         require_once("vendor/autoload.php");
+        if(!isset($_SESSION['access_token'])) {
+                      $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/oauth2callback.php';
+                      header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
+                }
+
 
 	if (isset($_POST['username']) && strlen($_POST["username"]) > 0)
 	{
