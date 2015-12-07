@@ -38,7 +38,9 @@ require_once('steam_calls.php');
                                                  ':timePlayed' => $game->playtime_forever / 60.0,
                                            ));
                 }
-            } else {
+            } 
+            else 
+            {
                 $relationStmt=$dbconn->prepare("INSERT INTO `usergamerelations` (`UserID`, `GameID`, `timePlayed`) VALUES (:userid,:gameid,:timePlayed)");
                 $relationStmt->execute(array(':userid' => $userid,
                                              ':gameid' => $game->appid,
@@ -47,12 +49,14 @@ require_once('steam_calls.php');
             }
 
         }
-    } else if(isset($_POST['steamid']) && strlen($_POST["steamid"]) > 0) {
+    } 
+    else if(isset($_POST['steamid']) && strlen($_POST["steamid"]) > 0) 
+    {
         print "Please Log In";
     }
 ?>
 
-
+<!--The form to take in their steam ID or vanity URL.-->
 <form name="steamform" action="account.php" method="post">
 	<label for="steamid">Enter your Steam ID:</label>
 	<input type="text" name="steamid" id="steamid"><br/>

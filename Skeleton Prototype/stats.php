@@ -1,5 +1,4 @@
 <?php 
-	#include the header contents
 	require_once("header.php");
 
 	#if any of the forms have been filled out, performs the search
@@ -58,6 +57,5 @@
 </form>
 
 <?php
-	#include the footer contents
 	require_once("footer.php");
 ?>
